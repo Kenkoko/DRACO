@@ -25,4 +25,3 @@ reg_eigen
 - [ ] write list of dependencies in this filec
 - [ ] capture picture in webcam from terminal
 - [ ] When database is big enough, recognize with different methods and make statistics. Statistics should be automated and updated continuously
-- 
