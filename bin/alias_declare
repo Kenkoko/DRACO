@@ -1,0 +1,2 @@
+alias compile_opencv="g++ -g -Wall `pkg-config opencv --libs --cflags` -o"
+alias image_reformat="mogrify -resize 160x120!"

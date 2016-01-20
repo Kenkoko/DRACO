@@ -1,0 +1,5 @@
+#!/bin/bash
+
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+g++ -g -Wall `pkg-config opencv --libs --cflags` -o\
+$CURRENT_DIR/../build/check_eigenfaces $CURRENT_DIR/../src/check_eigenfaces.cpp

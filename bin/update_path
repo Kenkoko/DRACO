@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo 'export PATH=${PATH}:'"$PWD" >> ~/.bashrc
+cat ./alias_declare >> ~/.bashrc

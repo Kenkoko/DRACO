@@ -1,0 +1,5 @@
+#!/bin/sh
+
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "$CURRENT_DIR/data_create_csv"
+source "$CURRENT_DIR/checking_create_csv"

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+create_cvs -r $CURRENT_DIR/../database/data_csv.txt $CURRENT_DIR/../database/database_faces/*

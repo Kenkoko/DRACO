@@ -1,0 +1,1 @@
+/home/cer/faceRecognization_opencv/database/checking_objects/nothing-2.jpg;1

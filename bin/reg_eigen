@@ -1,0 +1,5 @@
+#!/bin/sh
+
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+$CURRENT_DIR/../build/check_eigenfaces $CURRENT_DIR/../database/data_csv.txt\
+ $CURRENT_DIR/../database/checking_csv.txt $CURRENT_DIR/../test/test_result

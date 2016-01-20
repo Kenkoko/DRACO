@@ -1,0 +1,79 @@
+#!/bin/bash
+#	readlink only files in directories
+#	each directory at the youngest root increments i
+
+# dependencies:
+#	readlink
+
+FILENAME=""
+EXT=""
+TEMP="/dev/shm/cvs_temp"
+
+function create_csv_file
+{
+	i=1
+	while [ "$1" != "" ]; do
+		if [ -d $1 ]
+		then
+			readlink -f $1/* > $TEMP
+			vim -c "%s/$/;$i" -c "wq" $TEMP
+		      	cat $TEMP >> $FILENAME
+			let i++
+			echo "List of files in $1 is saved to $FILENAME"
+		else
+			echo "$1 is not a directory, no path was written"
+		fi
+		shift
+	done
+}
+
+function check_argument
+{
+	if [ $1 -lt $2 ]; then
+	    echo "Usage: create_csv [-r] [-i] <file_to_write_to> <path>"
+	    exit 1
+	fi
+}
+
+function check_filename
+{
+	if [  "${FILENAME: -4: -3}" == '.' ] ; then 
+		EXT=${FILENAME: -3}
+	fi
+	if [[ -e $FILENAME ]] ; then
+		echo "$FILENAME already exists."
+		i=2
+		while [[ -e "${FILENAME: 0: -4}-$i.$EXT" ]] ; do
+			let i++
+		done
+		FILENAME=${FILENAME: 0: -4}-$i.$EXT
+	fi
+}
+
+case $1 in
+	-r | --rewrite )	shift
+				check_argument $# 2
+				FILENAME=$1
+				if [ -f $1 ]
+				then
+					rm $1
+				fi
+				shift
+				create_csv_file "${@:1}"
+				;;
+	-i | --insert )		shift
+				check_argument $# 2
+				FILENAME=$1
+				shift
+				create_csv_file "${@:1}"
+
+				;;
+	* )			check_argument $# 2
+				FILENAME=$1
+				check_filename
+				shift
+				create_csv_file "${@:1}"
+esac
+
+rm $TEMP
+exit 1
