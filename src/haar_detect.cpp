@@ -8,59 +8,63 @@
 using namespace std;
 using namespace cv;
 
-// Strings define
 String face_cascade_name = "/home/cer/faceRecognization_opencv/database/haarcascades/haarcascade_frontalface_alt.xml";
-String eyes_cascade_name = "/home/cer/faceRecognization_opencv/database/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
-String save_directory = "/home/cer/faceRecognization_opencv/database/test_mod/cropedImage.jpg";
+char* image_name;
+char* save_to;
 string window_name = "Capture - Face detection";
 
-//Cascade classifier
+std::vector<Rect> faces;
+Mat image;
+Mat gray_img;
+Mat cropped_img;
+
 CascadeClassifier face_cascade;
 
 RNG rng(12345);
 
 int main( int argc, char** argv )
 {
+	if( argc != 3 ){
+		printf( "Usage: ./haar_detect <image> <file name to save to>\n " );
+		return -1;
+	}
+	
 	//Check cascade file
 	if( !face_cascade.load( face_cascade_name ) ){
-		printf("--(!)Error loading\n");
+		printf("ERROR: Cannot load cascade file\n");
 		return -1;
 	}
 
 	//Load the image fom argument
-	char* imageName = argv[1];
-	Mat image;
-	image = imread( imageName, 1 );
+	image_name = argv[1];
+	save_to = argv[2];
+	image = imread( image_name, 1 );
 
 	//Check image file
-	if( argc != 2 || !image.data )
-	{
-	  printf( " No image data \n " );
-	  return -1;
+	if( !image.data || image.empty() ){
+		printf( "No image data or image empty\n " );
+		return -1;
 	}
 
-	//Detect the face and cut it
-	if( !image.empty() ){
-		std::vector<Rect> faces;
-		Mat frame_gray;
-		Mat cropedImage;
+	//Convert to grayscale
+	cvtColor( image, gray_img, CV_BGR2GRAY );
+	equalizeHist( gray_img, gray_img );
 
-		cvtColor( image, frame_gray, CV_BGR2GRAY );
-		equalizeHist( frame_gray, frame_gray );
+	//Detect the face
+	face_cascade.detectMultiScale( gray_img, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
 
-		face_cascade.detectMultiScale( frame_gray, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
-
-		for( size_t i = 0; i < faces.size(); i++ )
-		{
-		cropedImage = frame_gray(Rect(faces[i].x,faces[i].y,faces[i].width,faces[i].height));
-
-		imwrite( save_directory, cropedImage );
-		}
-		imshow( window_name, cropedImage );
-		waitKey(0);
+	//Cut each face and save to the new place
+	for( size_t i = 0; i < faces.size(); i++ ){
+		cropped_img = gray_img(Rect(faces[i].x,faces[i].y,faces[i].width,faces[i].height));
+		imwrite( save_to, cropped_img );
 	}
-	else{
-		printf(" --(!) No captured image -- Break!");
-	}
-  return 0;
+
+	//Show the face, comment if want to run quietly
+	//The window is closed after any keystroke
+	imshow( window_name, cropped_img );
+	waitKey(0);
+
+	printf("Cropped image saved to %s.\n",save_to);
+	
+	return 0;
 }
