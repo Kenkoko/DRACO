@@ -1,92 +1,66 @@
- #include "opencv2/objdetect/objdetect.hpp"
- #include "opencv2/highgui/highgui.hpp"
- #include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/objdetect/objdetect.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
 
- #include <iostream>
- #include <stdio.h>
+#include <iostream>
+#include <stdio.h>
 
- using namespace std;
- using namespace cv;
+using namespace std;
+using namespace cv;
 
- /** Function Headers */
- void detectAndDisplay( Mat frame );
+// Strings define
+String face_cascade_name = "/home/cer/faceRecognization_opencv/database/haarcascades/haarcascade_frontalface_alt.xml";
+String eyes_cascade_name = "/home/cer/faceRecognization_opencv/database/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
+String save_directory = "/home/cer/faceRecognization_opencv/database/test_mod/cropedImage.jpg";
+string window_name = "Capture - Face detection";
 
- /** Global variables */
- String face_cascade_name = "/home/cer/faceRecognization_opencv/database/haarcascades/haarcascade_frontalface_alt.xml";
- String eyes_cascade_name = "/home/cer/faceRecognization_opencv/database/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
- CascadeClassifier face_cascade;
- CascadeClassifier eyes_cascade;
- string window_name = "Capture - Face detection";
- RNG rng(12345);
+//Cascade classifier
+CascadeClassifier face_cascade;
 
- /** @function main */
- int main( int argc, char** argv )
- {
+RNG rng(12345);
 
-char* imageName = argv[1];
-
- Mat image;
- image = imread( imageName, 1 );
-
- if( argc != 2 || !image.data )
- {
-   printf( " No image data \n " );
-   return -1;
- }
-
-   //-- 1. Load the cascades
-   if( !face_cascade.load( face_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
-   if( !eyes_cascade.load( eyes_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
-     while( true )
-     {
-   //-- 3. Apply the classifier to the frame
-       if( !image.empty() )
-       { detectAndDisplay( image ); }
-       else
-       { printf(" --(!) No captured image -- Break!"); break; }
-
-       int c = waitKey(10);
-       if( (char)c == 'c' ) { break; }
-    }
-   return 0;
- }
-
-/** @function detectAndDisplay */
-void detectAndDisplay( Mat frame )
+int main( int argc, char** argv )
 {
-  std::vector<Rect> faces;
-  Mat frame_gray;
-  Mat cropedImage;
+	//Check cascade file
+	if( !face_cascade.load( face_cascade_name ) ){
+		printf("--(!)Error loading\n");
+		return -1;
+	}
 
-  cvtColor( frame, frame_gray, CV_BGR2GRAY );
-  equalizeHist( frame_gray, frame_gray );
+	//Load the image fom argument
+	char* imageName = argv[1];
+	Mat image;
+	image = imread( imageName, 1 );
 
-  //-- Detect faces
-  face_cascade.detectMultiScale( frame_gray, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
+	//Check image file
+	if( argc != 2 || !image.data )
+	{
+	  printf( " No image data \n " );
+	  return -1;
+	}
 
-  for( size_t i = 0; i < faces.size(); i++ )
-  {
- cropedImage = frame_gray(Rect(faces[i].x,faces[i].y,faces[i].width,faces[i].height));
+	//Detect the face and cut it
+	if( !image.empty() ){
+		std::vector<Rect> faces;
+		Mat frame_gray;
+		Mat cropedImage;
 
- imwrite( "~/faceRecognization_opencv/database/test_mod/Gray_Image.jpg", cropedImage );
+		cvtColor( image, frame_gray, CV_BGR2GRAY );
+		equalizeHist( frame_gray, frame_gray );
 
-//    Point center( faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5 );
-//    ellipse( frame, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
-//
-//    Mat faceROI = frame_gray( faces[i] );
-//    std::vector<Rect> eyes;
-//
-//    //-- In each face, detect eyes
-//    eyes_cascade.detectMultiScale( faceROI, eyes, 1.1, 2, 0 |CV_HAAR_SCALE_IMAGE, Size(30, 30) );
-//
-//    for( size_t j = 0; j < eyes.size(); j++ )
-//     {
-//       Point center( faces[i].x + eyes[j].x + eyes[j].width*0.5, faces[i].y + eyes[j].y + eyes[j].height*0.5 );
-//       int radius = cvRound( (eyes[j].width + eyes[j].height)*0.25 );
-//       circle( frame, center, radius, Scalar( 255, 0, 0 ), 4, 8, 0 );
-//     }
-  }
-  //-- Show what you got
-  //imshow( window_name, frame );
- imshow( "Gray image", cropedImage );
- }
+		face_cascade.detectMultiScale( frame_gray, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
+
+		for( size_t i = 0; i < faces.size(); i++ )
+		{
+		cropedImage = frame_gray(Rect(faces[i].x,faces[i].y,faces[i].width,faces[i].height));
+
+		imwrite( save_directory, cropedImage );
+		}
+		imshow( window_name, cropedImage );
+		waitKey(0);
+	}
+	else{
+		printf(" --(!) No captured image -- Break!");
+	}
+  return 0;
+}
