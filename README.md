@@ -19,6 +19,9 @@ reg_eigen
 ```
 
 - [ ] read many files in checking directory
-- [ ] write list of dependencies in this file
-- [ ] capture picture in webcam from terminal
+- [ ] Use cvtColor() to convert images to grayscale
+- [ ] Try to use resize() to resize all images
 - [ ] change thresholds to avoid returning wrong prediction when there's no one
+- [ ] write list of dependencies in this filec
+- [ ] capture picture in webcam from terminal
+- [ ] When database is big enough, recognize with different methods and make statistics. Statistics should be automated and updated continuously
