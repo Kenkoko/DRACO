@@ -1,4 +1,5 @@
 #!/bin/bash
 
 echo 'export PATH=${PATH}:'"$PWD" >> ~/.bashrc
+echo 'export PATH=${PATH}:'"$PWD/../build" >> ~/.bashrc
 cat ./alias_declare >> ~/.bashrc

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+BUILD="$CURRENT_DIR/../build"
+SRC="$CURRENT_DIR/../src"
+
+for file in $SRC/*.cpp
+do
+	filename=$(basename "$file")
+	extension="${filename##*.}"
+	filename="${filename%.*}"
+
+	g++ -g -Wall `pkg-config opencv --libs --cflags` -o\
+	"$BUILD/$filename" "$SRC/$filename.$extension"
+done
