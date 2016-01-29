@@ -1,5 +1,5 @@
 # DRACO - Data Random Access and COllecting system
-[![GitHub version](https://travis-ci.org/milligram/milligram.svg?branch=master)](https://travis-ci.org/milligram/milligram)
+[![GitHub version](https://github.com/cer-nagas/DRACO/releases/tag/v0.1.1)](https://travis-ci.org/milligram/milligram)
 
 ## Synopsis
 Use camera to collect image, detect and crop only faces, recognize each person
@@ -25,7 +25,20 @@ reg_eigen
 ```
 
 ## License
-Apache
+Copyright [2016] [Hoi "Nagas" Nguyen]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
 
 - [ ] read many files in checking directory
 - [ ] Use cvtColor() to convert images to grayscale
