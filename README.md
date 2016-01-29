@@ -1,6 +1,12 @@
-# Face Recognization with opencv
-Automatically recognize face using opencv classes.
+# DRACO - Data Random Access and COllecting system
+[![GitHub version](https://travis-ci.org/milligram/milligram.svg?branch=master)](https://travis-ci.org/milligram/milligram)
 
+## Synopsis
+Use camera to collect image, detect and crop only faces, recognize each person
+and save their images into a separate folder.
+VERSION Lozenge
+
+## Installation
 Go to faceRecognization_opencv/bin and run ONCE: 
 ```
 source update_path 
@@ -17,6 +23,9 @@ Run to recognize the saved objects
 ```
 reg_eigen 
 ```
+
+## License
+Apache
 
 - [ ] read many files in checking directory
 - [ ] Use cvtColor() to convert images to grayscale
