@@ -1,17 +1,35 @@
+/**
+Copyright [2016] [Hoi "Nagas" Nguyen]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 #include "opencv2/objdetect/objdetect.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
 #include <iostream>
 #include <stdio.h>
+//#include <limits.h>
+//#include <unistd.h>
 
 using namespace std;
 using namespace cv;
 
-String face_cascade_name = "/home/cer/faceRecognization_opencv/database/haarcascades/haarcascade_frontalface_alt.xml";
 char* image_name;
 char* save_to;
 string window_name = "Capture - Face detection";
+const char* relative_path = "/database/haarcascades/haarcascade_frontalface_alt.xml";
 
 std::vector<Rect> faces;
 Mat image;
@@ -30,7 +48,12 @@ int main( int argc, char** argv )
 	}
 	
 	//Check cascade file
-	if( !face_cascade.load( face_cascade_name ) ){
+	char* cascades_path;
+	cascades_path = std::getenv("DRACO_PATH") ;
+        std::cout << "Your PATH is: " << cascades_path << '\n';
+	strcat (cascades_path , relative_path);
+        std::cout << "Your NEW PATH is: " << cascades_path << '\n';
+	if( !face_cascade.load( cascades_path ) ){
 		printf("ERROR: Cannot load cascade file\n");
 		return -1;
 	}
@@ -68,8 +91,8 @@ int main( int argc, char** argv )
 
 	//Show the face, comment if want to run quietly
 	//The window is closed after any keystroke
-	imshow( window_name, cropped_img );
-	waitKey(0);
+	//imshow( "LALA", cropped_img );
+	//waitKey(0);
 
 	printf("Cropped image saved to %s.\n",save_to);
 	
