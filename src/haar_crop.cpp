@@ -53,10 +53,17 @@ int main( int argc, char** argv )
 	//Detect the face
 	face_cascade.detectMultiScale( gray_img, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
 
-	//Cut each face and save to the new place
-	for( size_t i = 0; i < faces.size(); i++ ){
-		cropped_img = gray_img(Rect(faces[i].x,faces[i].y,faces[i].width,faces[i].height));
-		imwrite( save_to, cropped_img );
+	if ( !faces.size() ){
+		return 2;
+	}
+	else{
+		//Cut each face and save to the new place
+		for( size_t i = 0; i < faces.size(); i++ ){
+			char* save_to_numbered = save_to;
+			strcat(save_to_numbered, (const char*)i);	
+			cropped_img = gray_img(Rect(faces[i].x,faces[i].y,faces[i].width,faces[i].height));
+			imwrite( save_to_numbered, cropped_img );
+		}
 	}
 
 	//Show the face, comment if want to run quietly
