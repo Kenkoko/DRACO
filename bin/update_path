@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo 'export DRACO_PATH='"$PWD/.." >> ~/.bashrc
 echo 'export PATH=${PATH}:'"$PWD" >> ~/.bashrc
-echo 'export PATH=${PATH}:'"$PWD/../build" >> ~/.bashrc
+echo 'export PATH=${PATH}:'"$DACO_PATH/build" >> ~/.bashrc
 cat ./alias_declare >> ~/.bashrc
