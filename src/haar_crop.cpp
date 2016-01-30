@@ -23,6 +23,9 @@ limitations under the License.
 //#include <limits.h>
 //#include <unistd.h>
 
+#include <boost/filesystem.hpp>
+
+using namespace boost::filesystem;
 using namespace std;
 using namespace cv;
 
@@ -42,28 +45,25 @@ RNG rng(12345);
 
 int main( int argc, char** argv )
 {
+	// Check arguments, if OK then load
 	if( argc != 3 ){
 		printf( "Usage: ./haar_detect <image> <file name to save to>\n " );
 		return -1;
 	}
+	image_name = argv[1];
+	save_to = argv[2];
 	
 	//Check cascade file
 	char* cascades_path;
 	cascades_path = std::getenv("DRACO_PATH") ;
-        std::cout << "Your PATH is: " << cascades_path << '\n';
 	strcat (cascades_path , relative_path);
-        std::cout << "Your NEW PATH is: " << cascades_path << '\n';
 	if( !face_cascade.load( cascades_path ) ){
 		printf("ERROR: Cannot load cascade file\n");
 		return -1;
 	}
 
-	//Load the image fom argument
-	image_name = argv[1];
-	save_to = argv[2];
-	image = imread( image_name, 1 );
-
 	//Check image file
+	image = imread( image_name, 1 );
 	if( !image.data || image.empty() ){
 		printf( "No image data or image empty\n " );
 		return -1;
@@ -76,25 +76,34 @@ int main( int argc, char** argv )
 	//Detect the face
 	face_cascade.detectMultiScale( gray_img, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
 
+	// If no face, move it to tmp, else cut them and save
 	if ( !faces.size() ){
+		printf ("No face in file %s, moved to archive/tmp", image_name);
+		// todo: Move it
 		return 2;
 	}
 	else{
+		printf("There are %lu face(s) in file %s\n",faces.size(),image_name);
+		boost::filesystem::path save_to_file(save_to);
 		//Cut each face and save to the new place
-		for( size_t i = 0; i < faces.size(); i++ ){
-			char* save_to_numbered = save_to;
-			strcat(save_to_numbered, (const char*)i);	
+		for( size_t i = 1; i <= faces.size(); i++ ){
+			
+			stringstream s;
+			s << save_to_file.parent_path().string() << "/" << save_to_file.stem().string() << i << save_to_file.extension().string();
+			string converted(s.str());
+			char const *number = converted.c_str();
+
 			cropped_img = gray_img(Rect(faces[i].x,faces[i].y,faces[i].width,faces[i].height));
-			imwrite( save_to_numbered, cropped_img );
+			imwrite( number, cropped_img );
+			printf("Cropped image saved to %s\n",number);
 		}
+		return 0;
 	}
 
 	//Show the face, comment if want to run quietly
 	//The window is closed after any keystroke
-	//imshow( "LALA", cropped_img );
+	//imshow( window_name , cropped_img );
 	//waitKey(0);
 
-	printf("Cropped image saved to %s.\n",save_to);
 	
-	return 0;
 }

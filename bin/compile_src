@@ -10,6 +10,8 @@ do
 	extension="${filename##*.}"
 	filename="${filename%.*}"
 
-	g++ -g -Wall `pkg-config opencv --libs --cflags` -o\
+#	g++ -g -std=c++0x -Wall `pkg-config opencv --libs --cflags` -o\
+#	"$BUILD/$filename" "$SRC/$filename.$extension"
+	g++ -g -lboost_filesystem -lboost_system -Wall `pkg-config opencv --libs --cflags` -o\
 	"$BUILD/$filename" "$SRC/$filename.$extension"
 done
