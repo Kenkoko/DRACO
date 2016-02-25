@@ -17,6 +17,7 @@
  *
  *   See <http://www.opensource.org/licenses/bsd-license>
  */
+/* Testing */
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/contrib/contrib.hpp"
